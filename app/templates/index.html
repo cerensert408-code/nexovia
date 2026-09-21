@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Nexovia AI</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #1B2A4A;
+        }
+
+        .chat {
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background: #4A90E2;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        #cevap {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f7fa;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Nexovia</h1>
+
+    <p>Eğitim ve kariyer yolculuğun için Nexovia AI'a sor.</p>
+
+    <div class="chat">
+
+        <textarea
+            id="mesaj"
+            placeholder="Sorunu buraya yaz..."
+        ></textarea>
+
+        <button onclick="sor()">
+            Sor
+        </button>
+
+        <div id="cevap">
+            AI cevabı burada görünecek.
+        </div>
+
+    </div>
+
+
+    <script>
+
+        async function sor() {
+
+            const mesaj = document.getElementById("mesaj").value;
+
+            if (!mesaj) {
+                alert("Lütfen bir mesaj yaz.");
+                return;
+            }
+
+            const cevapAlani =
+                document.getElementById("cevap");
+
+            cevapAlani.innerText = "Yanıt hazırlanıyor...";
+
+            try {
+
+                const response = await fetch("/api/sohbet", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        mesaj: mesaj,
+                        gecmis: []
+                    })
+
+                });
+
+                const data = await response.json();
+
+                if (data.basari) {
+
+                    cevapAlani.innerText =
+                        data.cevap;
+
+                } else {
+
+                    cevapAlani.innerText =
+                        data.hata;
+                }
+
+            } catch (error) {
+
+                cevapAlani.innerText =
+                    "Bir bağlantı hatası oluştu.";
+            }
+        }
+
+    </script>
+
+</body>
+</html>
